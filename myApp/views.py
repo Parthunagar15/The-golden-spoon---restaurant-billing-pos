@@ -183,7 +183,7 @@ def print_bill_view(request, bill_id):
             item.total_item_price = item.price * item.quantity
             items_with_totals.append(item)
 
-        # Context for the template
+        # Context for the template 
         context = {
             'bill': bill,
             'items': items_with_totals
@@ -194,7 +194,7 @@ def print_bill_view(request, bill_id):
         html_string = render_to_string('bill_templates.html', context)
 
         # Generate PDF
-        pdf_file = HTML(string=html_string).write_pdf()
+        pdf_file = HTML(string=html_string, base_url=None).write_pdf()
 
         # Create an HTTP response with the PDF
         response = HttpResponse(pdf_file, content_type='application/pdf')
@@ -291,7 +291,7 @@ def print_kot_view(request, kot_id):
         }
         html_string = render_to_string('kot.html', context)
 
-        pdf_file = HTML(string=html_string).write_pdf()
+        pdf_file = HTML(string=html_string, base_url=None).write_pdf()
 
         response = HttpResponse(pdf_file, content_type='application/pdf')
         response['Content-Disposition'] = f'inline; filename="bill_{kot_id}.pdf"'
