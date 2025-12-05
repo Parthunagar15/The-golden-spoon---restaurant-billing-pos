@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>kot  {{ kot_id }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        h1 { color: #333; }
+        .bill-details { margin-bottom: 20px; }
+        .bill-details p { margin: 5px 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .total { text-align: right; font-size: 1.2em; font-weight: bold; margin-top: 20px; }
+        .container {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1>kitchen order token(KOT)</h1>
+    <h2> kot id {{ kot_id }} </h2>
+    
+    <div class="bill-details">
+        <h3><strong>Order for table :</strong> {{ bill.table_name }}</h3>
+        <p><strong>Date:</strong> {{ bill.created_at|date:"Y-m-d H:i" }}</p>
+        
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.item_name }}</td>
+                <td>{{ item.quantity }}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+    </div>
+</body>
+</html>

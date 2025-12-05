@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Golden Spoon - registeration</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base & Typography --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fbf3e4; /* Creamy background */
+            color: #1c3d5a; /* Default navy text */
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            
+        }
+
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .golden-text {
+            color: #d19a3d; /* Golden color for the main title */
+        }
+
+        .navy-text {
+            color: #1c3d5a; /* Dark blue color for headings and labels */
+        }
+
+        /* --- Layout --- */
+        .container {
+            width: 100%;
+            max-width: 1100px; /* equivalent to max-w-6xl */
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        /* --- Branding Section (Left) --- */
+        .branding-section {
+            text-align: center;
+        }
+        
+        .branding-section h1 {
+            font-size: 3.75rem; /* text-6xl */
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .branding-section p {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 500;
+        }
+
+        .illustration-container {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .illustration-svg {
+            width: 100%;
+            max-width: 28rem; /* max-w-md */
+        }
+
+        /* --- Login Card Section (Right) --- */
+        .login-card {
+            background-color: #ffffff;
+            border-radius: 1rem; /* rounded-2xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            width: 100%;
+            max-width: 28rem; /* max-w-md */
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .login-card h2 {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* --- Form Elements --- */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group-last {
+             margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: #f3f4f6; /* bg-gray-100 */
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6; /* focus:border-blue-400 */
+        }
+        
+        .custom-btn {
+            width: 100%;
+            background-color: #f3b55a; /* Button color */
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.125rem; /* text-lg */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-btn:hover {
+            background-color: #e8a543; /* Darker shade on hover */
+        }
+
+        /* --- JavaScript Helper Classes --- */
+        .error-message {
+            color: #ef4444; /* text-red-500 */
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 0.25rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        .input-error {
+            border-color: #ef4444 !important; /* Emulates border-red-500 */
+        }
+        
+        /* --- Responsive Design --- */
+        @media (min-width: 768px) {
+            .branding-section h1 {
+                font-size: 4.5rem; /* md:text-7xl */
+            }
+            .login-card {
+                padding: 3rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+            }
+            .branding-section {
+                text-align: left;
+            }
+            .illustration-container {
+                justify-content: flex-start;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Left Section: Branding & Illustration -->
+        <div class="branding-section">
+            <h1 class="font-playfair golden-text">The Golden Spoon</h1>
+            <p class="navy-text">The Restaurant billing software</p>
+            <div class="illustration-container">
+                <!-- SVG Illustration of a couple dining -->
+               
+             </div>
+        </div>
+
+<div class="login-card">
+    <h2 class="navy-text">Welcome to Registration page</h2>
+
+    <!-- show Django messages (errors/success) -->
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li style="color: red;">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <form id="registerForm" method="POST" action="{% url 'register' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+                    <label for="username" class="form-label navy-text" name="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="">
+                    
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label navy-text" name="email">User Email </label>
+                    <input type="text" id="email" name="email" class="form-input" placeholder="">
+                    
+                </div>
+                <div class="form-group form-group-last">
+                    <label for="password" class="form-label navy-text" name="password1">Password</label>
+                    <input type="password" id="password" name="password1" class="form-input" placeholder="">
+                
+                </div>
+                <div class="form-group">
+                    <label for="password2" class="form-label navy-text"name="password2">Confirm password</label>
+                    <input type="text" id="password2" name="password2" class="form-input" placeholder="">
+                    
+                </div>
+
+        <button type="submit" class="custom-btn">create user</button>
+    </form>
+    <a href="{% url 'login' %}">
+    <button class="custom-btn" style="margin-top: 10px;" >Already a user ?</button> 
+</a>
+</div>
+
+<script>
+const registerForm = document.getElementById('registerForm');
+
+if (registerForm) {
+  registerForm.addEventListener('submit', function(event) {
+    // find the inputs by name Django uses
+    const usernameInput = registerForm.querySelector('input[name="username"]');
+    const emailInput    = registerForm.querySelector('input[name="email"]');
+    const pw1Input      = registerForm.querySelector('input[name="password1"]');
+    const pw2Input      = registerForm.querySelector('input[name="password2"]');
+
+    // If the fields aren't present (form rendered differently), allow submit
+    if (!usernameInput || !pw1Input || !pw2Input) return;
+
+    let isValid = true;
+    const errors = [];
+
+    if (usernameInput.value.trim() === '') {
+      isValid = false;
+      errors.push('Username is required.');
+    }
+    if (emailInput && emailInput.value.trim() === '') {
+      isValid = false;
+      errors.push('Email is required.');
+    }
+    if (pw1Input.value.trim() === '') {
+      isValid = false;
+      errors.push('Password is required.');
+    }
+    if (pw2Input.value.trim() === '') {
+      isValid = false;
+      errors.push('Please confirm your password.');
+    }
+    if (pw1Input.value !== pw2Input.value) {
+      isValid = false;
+      errors.push('Passwords do not match.');
+    }
+
+    if (!isValid) {
+      // block submit and alert errors (you can replace alerts with inline UI)
+      event.preventDefault();
+      alert(errors.join('\\n'));
+    }
+    // otherwise allow form submit — server will perform final validation
+  });
+}
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Golden Spoon - Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-cream: #fbf3e4;
+            --navy-blue: #1c3d5a;
+            --golden-yellow: #f3b55a;
+            --golden-yellow-dark: #e8a543;
+            --border-color: #d1c8b9;
+            --table-bg: #e0e7ff;
+            --table-border: #c4cde4;
+            --table-running-bg: #fee2e2;
+            --table-running-border: #fca5a5;
+            --dot-blank: #b0b0b0;
+            --dot-running: #e53e3e;
+            --dot-paid: #3b82f6;
+            --sidebar-bg: var(--navy-blue);
+            --sidebar-text: #ffffff;
+            --sidebar-active-bg: #3b82f6;
+            --input-bg: #e5e7eb;
+            --light-border: #d1d5db;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--navy-blue);
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .main-container {
+            padding: 1rem;
+        }
+
+        /* --- Header --- */
+        .main-header {
+            display: flex;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .menu-icon span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--navy-blue);
+            border-radius: 3px;
+        }
+
+        .header-actions {
+            margin-left: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: var(--golden-yellow);
+            color: var(--navy-blue);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--golden-yellow-dark);
+        }
+        
+        .btn.active {
+             background-color: var(--navy-blue);
+             color: white;
+        }
+
+        /* --- View Controls (Sub Header) --- */
+        .view-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 2px solid var(--border-color);
+            gap: 1rem;
+        }
+
+        .view-controls h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        /* --- TABLE VIEW STYLES --- */
+        #tableView .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: center;
+            padding: 1.5rem 0;
+        }
+
+        #tableView .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        #tableView .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        #tableView .tables-section h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        #tableView .table-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        #tableView .table-card {
+            background-color: var(--table-bg);
+            border: 2px solid var(--table-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        #tableView .table-card.running {
+            background-color: var(--table-running-bg);
+            border-color: var(--table-running-border);
+        }
+
+        #tableView .table-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        #tableView .table-card::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: repeating-linear-gradient(-45deg, var(--table-border), var(--table-border) 4px, transparent 4px, transparent 8px);
+        }
+
+        #tableView .table-card.running::after {
+             background: repeating-linear-gradient(-45deg, var(--table-running-border), var(--table-running-border) 4px, transparent 4px, transparent 8px);
+        }
+
+
+        /* --- ORDER VIEW STYLES --- */
+        #orderView {
+            display: none; /* Initially hidden */
+            margin-top: 1rem;
+        }
+
+        /* .order-layout {
+            display: grid;
+            grid-template-columns: 200px 1fr 350px;
+            gap: 1.5rem;
+            align-items: start;
+        } */
+         .order-layout {
+            display: grid;
+            /* Updated this rule */
+            grid-template-columns: 200px 1fr 350px;
+            grid-template-areas: "sidebar content summary";
+            gap: 1.5rem;
+            align-items: start;}
+    
+        
+            /* Added these for clarity and consistency */
+        .order-sidebar { grid-area: sidebar; }
+        .order-content { grid-area: content; }
+        .order-summary { grid-area: summary; }
+        /* Left Sidebar */
+        .order-sidebar {
+            background-color: var(--sidebar-bg);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+        }
+        .sidebar-btn {
+            display: block;
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--sidebar-text);
+            padding: 0.8rem 1rem;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .sidebar-btn:hover, .sidebar-btn.active {
+            background-color: var(--sidebar-active-bg);
+        }
+        
+        /* Middle Content Area */
+        .order-content-header {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: 2px solid var(--navy-blue);
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .order-content-header .btn { flex-grow: 1; }
+
+        .search-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            width: 35rem;
+        }
+        .search-container input, .search-container select {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--navy-blue);
+            background-color: var(--input-bg);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .menu-items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        .menu-item-btn {
+            background-color: #fff;
+            border: 2px solid var(--light-border);
+            border-radius: 0.5rem;
+            padding: 1rem 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            min-height: 60px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .menu-item-btn:hover {
+            background-color: var(--table-bg);
+            border-color: var(--table-border);
+        }
+        
+        /* Right Summary Area */
+        .order-summary {
+            background-color: #fff;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+
+
+            
+        }
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--golden-yellow);
+            border-radius: 0.5rem 0.5rem 0 0;
+            color: var(--navy-blue);
+            font-weight: 700;
+        }
+        .summary-header div {
+             display: flex;
+              align-items:
+               center; gap: 0.5rem; 
+            }
+        .summary-header svg {
+             width: 24px; 
+            height: 24px;
+         }
+        
+        .summary-items { 
+            padding: 1rem;
+             min-height: 150px; 
+            }
+        .summary-items-header { 
+            display: grid; 
+            grid-template-columns: 1fr 80px 80px; 
+            font-weight: 700;
+             border-bottom: 2px solid var(--light-border);
+             padding-bottom: 0.5rem;
+             margin-bottom: 0.5rem; 
+            }
+        .summary-items-header div:not(:first-child) {
+             text-align: center;
+             }
+        .item-row { 
+            display: grid;
+             grid-template-columns: 1fr 80px 80px; 
+             align-items: center;
+              padding: 0.8rem 0;
+             }
+        .item-row div:last-child {
+             text-align: right;
+         }
+
+        .qty-controls { 
+            display: flex;
+             align-items: center;
+             justify-content: space-evenly; }
+
+        .qty-btn { 
+            background: none; 
+            border: 1px solid var(--light-border);
+             border-radius: 50%; 
+             width: 24px; height: 24px; 
+             cursor: pointer; 
+             font-weight: bold;
+             }
+        .empty-order-msg {
+             color: #9ca3af;
+              text-align: center; 
+              margin-top: 2rem; 
+            }
+
+        .summary-total { text-align: right;
+             font-weight: 700;
+              font-size: 1.2rem; 
+              padding: 1rem;
+               border-top: 2px solid var(--light-border);
+             }
+        
+        .summary-payment { display: grid; 
+            grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0 1rem 1rem; }
+        .payment-btn { background-color: #f3f4f6; border: 2px solid var(--light-border); border-radius: 0.5rem; padding: 0.7rem; cursor: pointer; }
+        .payment-btn.active { border-color: var(--navy-blue); background-color: var(--table-bg); }
+        
+        .summary-actions { 
+            display: grid;
+             grid-template-columns: 1fr 1fr; 
+             gap: 1rem;
+              padding: 1rem;
+               border-top: 2px solid var(--border-color);
+             }
+
+        /* General utility */
+        .hidden { display: none !important; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .order-layout {
+                grid-template-columns: 1fr 300px;
+                grid-template-areas: "sidebar summary" "content content";
+            }
+            .order-sidebar { grid-area: sidebar; }
+            .order-content { grid-area: content; }
+            .order-summary { grid-area: summary; }
+        }
+         @media (max-width: 768px) {
+            .order-layout {
+                grid-template-columns: 1fr;
+                grid-template-areas: "sidebar" "content" "summary";
+            }
+            .view-controls { flex-direction: column; align-items: stretch; }
+            .view-controls .view-actions { display: flex; justify-content: space-around; }
+        }
+
+    </style>
+</head>
+<body>
+    {% csrf_token %}
+    <div class="main-container">
+        <!-- Main Header -->
+        <header class="main-header">
+            <button class="menu-btn">
+                <div class="menu-icon">
+                    <span></span><span></span><span></span>
+                </div>
+            </button>
+            <div class="header-actions">
+                <a href = "{% url 'login'%}"
+                <button class="btn" id="logoutBtn" style="margin-left: 1rem; text-decoration: none;">Logout</button> 
+            </a>
+                <a href = "{% url 'admin:index'%}"
+                <button class="btn"  style="margin-left: 1rem; text-decoration: none;"> Admin panel</button>
+            </a>
+                <button class="btn hidden" id="backToTablesBtn" style="margin-left: 1rem; background-color: #e53e3e; color: white;">Back to Tables</button>
+            </div>
+        </header>
+
+        <!-- Table View Section -->
+        <div id="tableView">
+            <div class="view-controls">
+                <h2>Table View</h2>
+                <div class="view-actions">
+                
+                    <button class="btn" style="margin-left: 1rem;">
+                        last Bill count:
+                        {% if last_bill_id %}
+                            {{ last_bill_id }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                
+                         </button>
+                    <!-- <button class="btn" style="margin-left: 1rem;">Report</button> -->
+                     <a href="{% url 'reports' %}">
+                <button class="btn" style="margin-left: 1rem;">Report</button>
+            </a>
+                </div>
+            </div>
+            <div class="legend" style="padding-left: 40px;">
+                <!-- <div class="legend-item"><span class="legend-dot" style="background-color: var(--dot-blank);"></span> Blank Table</div> -->
+                <div class="legend-item"><span class="legend-dot" style="background-color: var(--dot-running);"></span> Running Table</div>
+                <div class="legend-item"><span class="legend-dot" style="background-color: var(--dot-paid);"></span> Blank table</div>
+            </div>
+       
+            {% if table_categories %}
+        {% for category in table_categories %}
+        <div class="tables-section">
+            <h3>{{ category.name }}</h3>
+            <div class="table-grid">
+                {% for table in category.table_set.all %}
+                    <div
+                          class="table-card {% if table.status == 'occupied' %}running{% endif %}"
+                        data-table="{{ table.name }}"
+                         data-capacity="{{ table.capicity }}"
+                          data-id="{{ table.id }}">  {{ table.name }}
+                    </div>
+                {% empty %}
+                    <p>No tables found in this category.</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No table categories have been set up yet.</p>
+    {% endif %}
+
+        </div>
+
+        <!-- Order View Section -->
+        <div id="orderView">
+            <div class="order-layout">
+                <!-- Left Sidebar -->
+                <div class="order-layout">
+                    <aside class="order-sidebar" id="orderSidebar">
+                        <div class="cat-title" style="align-items: center; justify-content: center; display: flex"><p style="color: white;">Category</p></div>
+                        {% for category in menu_categories %}
+                            <button 
+                                class="sidebar-btn {% if forloop.first %}active{% endif %}" 
+                                data-category="{{ category.name }}">
+                                {{ category.name }}
+                            </button>
+                        {% endfor %}
+                    </aside>
+                    
+                    <main class="order-content">
+                        <div class="search-container">
+                            <select id="categorySelect">
+                                {% for category in menu_categories %}
+                                    <option value="{{ category.name }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="text" id="searchInput" placeholder="Search items...">
+                        </div>
+                
+                        <div class="menu-items-grid" id="menuItemsGrid">
+                            {% for category in menu_categories %}
+                                {% for item in category.menuitem_set.all %}
+                                    <!-- <h2>Item</h2> -->
+                                    <button 
+                                        class="menu-item-btn {% if not forloop.parentloop.first %}hidden{% endif %}"
+                                        data-name="{{ item.name }}" 
+                                        data-price="{{ item.price }}"
+                                        data-category="{{ category.name }}"
+                                        data-id="{{ item.id }}">
+                                        {{ item.name }}
+                                    </button>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </main>
+                </div>
+
+                <!-- Right Summary -->
+                <aside class="order-summary">
+                    <div class="summary-header">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                        
+                        <span id="customerCount">
+                        
+                        
+                        
+                                
+                                        {% for Table in data_objects %}
+            <li>{{ Table.capicity }}</li>
+        {% endfor %}
+                                    </span>
+
+                        </div>
+                        <div id="tableIdentifier"></div>
+                    </div>
+                    <div class="summary-items" id="summaryItems">
+                        <div class="summary-items-header">
+                            <div>ITEMS</div><div>QTY.</div><div>PRICE</div>
+                        </div>
+                        <div class="empty-order-msg">This order is empty.</div>
+                        <!-- Order items will be populated by JS -->
+                    </div>
+                    <div class="summary-total" id="summaryTotal" Method ="post" >Total 0.00</div>
+                    <div class="summary-payment" id="paymentContainer">
+                        <button class="payment-btn " data-payment="Cash">Cash</button>
+                        <button class="payment-btn" data-payment="online ">online</button>
+                       
+                    </div>
+                    <div class="summary-actions">
+                        <button class="btn" id="printkot">Print KOT</button>
+                        <button class="btn" id="saveBillBtn">Save and Print bill</button>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- DATA ---
+    // The menuData object is NO LONGER NEEDED. It has been replaced by Django.
+    // const menuData = { ... };
+
+    // --- STATE ---
+    let currentTable = null;
+    let currentTableName = null;
+    let tableOrders = {}; 
+
+    // --- DOM Elements ---
+    const tableView = document.getElementById('tableView');
+    const orderView = document.getElementById('orderView');
+    const backToTablesBtn = document.getElementById('backToTablesBtn');
+    const allTableCards = document.querySelectorAll('.table-card');
+    const tableIdentifier = document.getElementById('tableIdentifier');
+    const orderSidebar = document.getElementById('orderSidebar');
+    const categorySelect = document.getElementById('categorySelect');
+    const menuItemsGrid = document.getElementById('menuItemsGrid');
+    const summaryItems = document.getElementById('summaryItems');
+    const summaryTotal = document.getElementById('summaryTotal');
+    const searchInput = document.getElementById('searchInput');
+    const allMenuItems = document.querySelectorAll('.menu-item-btn'); // Get all items once
+
+    // --- INITIALIZATION ---
+    function init() {
+        // No longer need populateCategories(), Django does it.
+        // No longer need initial renderMenu(), CSS/Template handles initial state.
+        setupEventListeners();
+    }
+    
+    // --- RENDER/FILTER FUNCTIONS ---
+    function filterMenu() {
+        const selectedCategory = categorySelect.value;
+        const searchTerm = searchInput.value.toLowerCase();
+
+        allMenuItems.forEach(itemBtn => {
+            const itemName = itemBtn.textContent.toLowerCase();
+            const itemCategory = itemBtn.dataset.category;
+            
+            const categoryMatch = itemCategory === selectedCategory;
+            const searchMatch = itemName.includes(searchTerm);
+
+            if (categoryMatch && searchMatch) {
+                itemBtn.classList.remove('hidden');
+            } else {
+                itemBtn.classList.add('hidden');
+            }
+        });
+    }
+
+    function renderOrderSummary() {
+        const order = tableOrders[currentTableName];
+        const headerHTML = `<div class="summary-items-header"><div>ITEMS</div><div>QTY.</div><div>PRICE</div></div>`;
+
+        if (!order || order.items.length === 0) {
+            summaryItems.innerHTML = headerHTML + `<div class="empty-order-msg">This order is empty.</div>`;
+            updateTotal();
+            return;
+        }
+
+        let itemsHTML = '';
+        order.items.forEach(item => {
+            itemsHTML += `
+                <div class="item-row" data-name="${item.name}">
+                    <div>${item.name}</div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" data-action="decrease">-</button>
+                        <span>${item.qty}</span>
+                        <button class="qty-btn" data-action="increase">+</button>
+                    </div>
+                    <div>${(item.price * item.qty).toFixed(2)}</div>
+                </div>
+            `;
+        });
+        summaryItems.innerHTML = headerHTML + itemsHTML;
+        updateTotal();
+    }
+
+    function updateTotal() {
+        const order = tableOrders[currentTableName];
+        if (order) {
+            const total = order.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            order.total = total;
+            summaryTotal.textContent = `Total ${total.toFixed(2)}`;
+        } else {
+            summaryTotal.textContent = `Total 0.00`;
+        }
+    }
+    
+    function updateTableStatuses() {
+         allTableCards.forEach(card => {
+            const tableId = card.dataset.table;
+            if (tableOrders[tableId] && tableOrders[tableId].items.length > 0) {
+                card.classList.add('running');
+            } else {
+                card.classList.remove('running');
+            }
+        });
+    }
+
+    // --- EVENT HANDLERS ---
+    // function handleTableClick(e) {
+      //  currentTable = e.target.closest('.table-card').dataset.table;
+     //   if (!tableOrders[currentTable]) {
+      //      tableOrders[currentTable] = { items: [], total: 0 };
+     //   }
+       // showOrderView();
+   // }
+
+   function handleTableClick(e) {
+    const clickedCard = e.target.closest('.table-card');
+
+    currentTableId = clickedCard.dataset.id;     // <-- STORE THE ID
+    currentTableName = clickedCard.dataset.table; // <-- STORE THE NAME
+
+    const currentCapacity = clickedCard.dataset.capacity;
+
+    if (!tableOrders[currentTableName]) {
+        tableOrders[currentTableName] = { items: [], total: 0 };
+    }
+
+    document.getElementById('customerCount').textContent = currentCapacity;
+
+    showOrderView(); // This function is fine
+}
+
+    function showOrderView() {
+    tableView.classList.add('hidden');
+    orderView.style.display = 'block';
+    backToTablesBtn.classList.remove('hidden');
+    // Use the table name for display
+    tableIdentifier.textContent = `Table ${currentTableName}`; // <-- UPDATE THIS
+    renderOrderSummary();
+}
+
+    function showTableView() {
+        updateTableStatuses();
+        orderView.style.display = 'none';
+        tableView.classList.remove('hidden');
+        backToTablesBtn.classList.add('hidden');
+        currentTable = null;
+        currentTableId = null;
+    }
+    
+    function handleCategoryChange() {
+        const category = categorySelect.value;
+        // Sync sidebar button
+        document.querySelectorAll('.sidebar-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.category === category);
+        });
+        filterMenu();
+    }
+    
+    function handleSidebarClick(e) {
+        const btn = e.target.closest('.sidebar-btn');
+        if (btn) {
+            document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const category = btn.dataset.category;
+            categorySelect.value = category; // Sync dropdown
+            filterMenu();
+        }
+    }
+
+   function handleMenuItemClick(e) {
+    const btn = e.target.closest('.menu-item-btn');
+    if (btn) {
+        // Get all data attributes
+        const { name, price, id } = btn.dataset;
+        addItemToOrder(name, parseFloat(price), id); // <-- PASS THE ID
+    }
+}
+
+    function addItemToOrder(name, price, id) {
+    const order = tableOrders[currentTableName];
+    // Find by ID, not by name
+    const existingItem = order.items.find(item => item.id === id); 
+
+    if (existingItem) {
+        existingItem.qty++;
+    } else {
+        // CORRECTLY store the id, name, price, and qty
+        order.items.push({ id: id, name: name, price: price, qty: 1 });
+    }
+    renderOrderSummary(); // This will now work, thanks to Fix 1
+}
+
+    function handleSummaryClick(e) {
+        const btn = e.target.closest('.qty-btn');
+        if(btn) {
+            const itemName = btn.closest('.item-row').dataset.name;
+            const action = btn.dataset.action;
+            const order = tableOrders[currentTableName];
+            const item = order.items.find(i => i.name === itemName);
+            
+            if (action === 'increase') {
+                item.qty++;
+            } else if (action === 'decrease') {
+                item.qty--;
+                if(item.qty === 0) {
+                    order.items = order.items.filter(i => i.name !== itemName);
+                }
+            }
+            renderOrderSummary();
+        }
+    }
+
+    function handleActiveButton(containerId, e) {
+         const btn = e.target.closest('.btn, .payment-btn');
+         if (btn) {
+             document.querySelectorAll(`#${containerId} .btn, #${containerId} .payment-btn`).forEach(b => b.classList.remove('active'));
+             btn.classList.add('active');
+         }
+    }
+
+
+    // --- EVENT LISTENERS SETUP ---
+    function setupEventListeners() {
+        allTableCards.forEach(card => card.addEventListener('click', handleTableClick));
+        backToTablesBtn.addEventListener('click', showTableView);
+        orderSidebar.addEventListener('click', handleSidebarClick);
+        categorySelect.addEventListener('change', handleCategoryChange);
+        menuItemsGrid.addEventListener('click', handleMenuItemClick);
+        summaryItems.addEventListener('click', handleSummaryClick);
+        searchInput.addEventListener('input', filterMenu);
+
+        document.getElementById('orderTypeContainer').addEventListener('click', (e) => handleActiveButton('orderTypeContainer', e));
+        document.getElementById('paymentContainer').addEventListener('click', (e) => handleActiveButton('paymentContainer', e));
+        
+    }
+    // ... (all your existing JS code) ...
+     
+// --- NEW FUNCTION for KOT ---
+function handlePrintKOT() {
+    console.log("Print KOT clicked");
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    const order = tableOrders[currentTableName];
+
+    if (!order || order.items.length === 0) {
+        alert('Cannot print KOT for an empty order.');
+        return;
+    }
+
+    // Payload includes the table ID and name
+    const payload = {
+        table_id: currentTableId,
+        table_name: currentTableName,
+        items: order.items // This array already has id, name, price, qty
+    };
+
+    // Send data to the new create-kot view
+    fetch("{% url 'create-kot' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // KOT saved! Now open the print view in a new tab.
+            const printUrl = `/print-kot/${data.kot_id}/`;
+            window.open(printUrl, '_blank');
+
+            // Note: We DON'T clear the order here.
+            // KOT is just for the kitchen. The order remains active.
+        } else {
+            alert('Error printing KOT: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An unexpected error occurred while printing KOT.');
+    });
+}
+function handleSaveBill() {
+    console.log("Save bill clicked");
+
+    // 1. Get the CSRF token
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+    // 2. Get the selected payment method
+    const activePaymentBtn = document.querySelector('#paymentContainer .payment-btn.active');
+    if (!activePaymentBtn) {
+        alert('Please select a payment method.');
+        return;
+    }
+    const paymentMethod = activePaymentBtn.dataset.payment;
+
+    // 3. Get the order data
+    const order = tableOrders[currentTableName];
+    if (!order || order.items.length === 0) {
+        alert('Cannot save an empty order.');
+        return;
+    }
+
+    // 4. Build the data payload to send to Django
+    const payload = {
+        table_id: currentTableId,
+        table_name: currentTableName,
+        payment_method: paymentMethod,
+        total_amount: order.total.toFixed(2),
+        items: order.items // This array already has id, name, price, qty
+    };
+
+    // 5. Send the data to the server
+    fetch("{% url 'save-bill' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    // ...
+    .then(data => {
+        if (data.success) {
+            // Bill saved successfully! Now open the print view.
+            
+            // 1. Construct the URL for the PDF view
+            const printUrl = `/print-bill/${data.bill_id}/`;
+            
+            
+            // 2. Open the PDF in a new browser tab
+            window.open(printUrl, '_blank');
+
+            // 3. Clear the order and go back to tables
+            delete tableOrders[currentTableName];
+            showTableView();
+            
+        } else {
+            alert('Error saving bill: ' + data.error);
+        }
+    })
+// ...
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An unexpected error occurred.');
+    });
+}
+
+// --- EVENT LISTENERS SETUP ---
+// --- EVENT LISTENERS SETUP ---
+        function setupEventListeners() {
+            allTableCards.forEach(card => card.addEventListener('click', handleTableClick));
+            backToTablesBtn.addEventListener('click', showTableView);
+            orderSidebar.addEventListener('click', handleSidebarClick);
+            categorySelect.addEventListener('change', handleCategoryChange);
+            menuItemsGrid.addEventListener('click', handleMenuItemClick);
+            summaryItems.addEventListener('click', handleSummaryClick);
+            searchInput.addEventListener('input', filterMenu);
+
+            // Add the listener for the save button
+            document.getElementById('saveBillBtn').addEventListener('click', handleSaveBill); 
+            document.getElementById('printkot').addEventListener('click', handlePrintKOT);
+
+            
+ 
+            // The unused line has been deleted.
+            
+            document.getElementById('paymentContainer').addEventListener('click', (e) => handleActiveButton('paymentContainer', e));
+        }
+
+// --- START THE APP ---
+init();
+
+    // --- START THE APP ---
+    
+});
+</script>
+</body>
+</html>
+
